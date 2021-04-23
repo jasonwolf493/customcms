@@ -1,0 +1,20 @@
+.hero{
+    background-color: black;
+    height: 500px;
+    overflow: hidden;
+}
+.hero img{
+  width: 100%;
+  opacity: 65%;
+  top: -325px;
+  position: relative;
+}
+h1{
+  font-weight: bold;
+}
+.top-bar, .top-bar ul{
+  background-color: #272727;
+}
+.container{
+  padding: 25px;
+}
