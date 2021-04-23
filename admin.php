@@ -92,40 +92,70 @@ if ($loggedin!="true" || empty($loggedin)){
   echo "
   <!DOCTYPE html>
   <html>
-  <head>
-    <script src='https://cdn.tiny.cloud/1/qiicceiwhvlqpefwujfkncty6igkuiqkmajsrli3raisjf3q/tinymce/5/tinymce.min.js' referrerpolicy='origin'></script>
-  </head>
-  <body>
-    <div class='container'>
-      <form method='POST' action='/admin.php'>
-        <textarea id='content-editor' class='content-editor'>
-          Welcome to TinyMCE!
-        </textarea>
-        <input class='submit-button' type='submit' value='Submit'>
-      </form>
+    <head>
+      <script src='https://cdn.tiny.cloud/1/qiicceiwhvlqpefwujfkncty6igkuiqkmajsrli3raisjf3q/tinymce/5/tinymce.min.js' referrerpolicy='origin'></script>
+    </head>
+    <body>
+      <div class='container'>";
+
+      $servername = "localhost";
+      $username = "admin";
+      $password = "password";
+      $dbname = "pages";
+
+      //use the localurl to search the DB for the content for this specific URL
+      // Create connection
+      $conn = new mysqli($servername, $username, $password, $dbname);
+      // Check connection
+      if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+      }
+
+      $sql = "SELECT * FROM `page`";
+      $result = $conn->query($sql);
+
+      if ($result->num_rows > 0) {
+        echo "<ul>";
+        $i = 0;
+        // output data of each row
+        while($row = $result->fetch_assoc()) {
+          $i++;
+          echo '<li>'.$row['pagename'].'</li>';
+
+          if ($i == $result->num_rows) {
+            echo "</ul>";
+          }
+        }
+      } else {}
+      $conn->close();
+
+      echo"
+        <form method='POST' action='/admin.php'>
+          <textarea name='post-content' id='content-editor' class='content-editor'>";
+          if (isset($_POST['post-content'])) {
+            $postContent = $_POST['post-content'];
+            echo $postContent;
+          }else{
+            echo 'no content';
+          }
+          echo "
+          </textarea>
+          <input class='submit-button' type='submit' value='Submit'>
+        </form>
         <script>
-          tinymce.init({
-            selector: 'textarea',
-            plugins: 'a11ychecker advcode casechange formatpainter linkchecker autolink lists checklist media mediaembed pageembed permanentpen powerpaste table advtable tinycomments tinymcespellchecker',
-            toolbar: 'a11ycheck addcomment showcomments casechange checklist code formatpainter pageembed permanentpen table',
-            toolbar_mode: 'floating',
-            tinycomments_mode: 'embedded',
-            tinycomments_author: 'Author name'
-          });
+            tinymce.init({
+              selector: 'textarea',
+              plugins: 'autolink lists media table',
+              toolbar: 'a11ycheck addcomment showcomments casechange checklist code formatpainter pageembed permanentpen table',
+              toolbar_mode: 'floating',
+              tinycomments_mode: 'embedded',
+              tinycomments_author: 'Author name'
+            });
         </script>
-    </div>
-  </body>
+      </div>
+    </body>
   </html>";
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
- ?>
+?>
