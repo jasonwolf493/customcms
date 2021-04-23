@@ -120,7 +120,7 @@ if ($loggedin!="true" || empty($loggedin)){
         // output data of each row
         while($row = $result->fetch_assoc()) {
           $i++;
-          echo '<li>'.$row['pagename'].'</li>';
+          echo '<li><a href="/admin.php?editID='.$row['id'].'">'.$row['pagename'].' - ID: '.$row['id'].'</a></li>';
 
           if ($i == $result->num_rows) {
             echo "</ul>";
@@ -132,12 +132,59 @@ if ($loggedin!="true" || empty($loggedin)){
       echo"
         <form method='POST' action='/admin.php'>
           <textarea name='post-content' id='content-editor' class='content-editor'>";
+
+
+
+
+          if(isset($_GET['editID'])){
+            $servername = "localhost";
+            $username = "admin";
+            $password = "password";
+            $dbname = "pages";
+
+            //use the localurl to search the DB for the content for this specific URL
+            // Create connection
+            $conn = new mysqli($servername, $username, $password, $dbname);
+            // Check connection
+            if ($conn->connect_error) {
+              die("Connection failed: " . $conn->connect_error);
+            }
+            $pageID = $_GET['editID'];
+            $sql = "SELECT * FROM `page` WHERE `id` = $pageID ";
+            $result = $conn->query($sql);
+
+            if ($result->num_rows > 0) {
+
+              // output data of each row
+              while($row = $result->fetch_assoc()) {
+
+                echo $row['content'];
+
+                if ($i == $result->num_rows) {
+                  echo "</ul>";
+                }
+              }
+            } else {}
+            $conn->close();
+
+          }
+
+//this will be for checking if there has been content posted
+  //if so then post to DB
+  /*
           if (isset($_POST['post-content'])) {
             $postContent = $_POST['post-content'];
             echo $postContent;
           }else{
             echo 'no content';
           }
+
+*/
+
+
+
+
+
           echo "
           </textarea>
           <input class='submit-button' type='submit' value='Submit'>
