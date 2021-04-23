@@ -39,3 +39,18 @@ footer{
   position: absolute;
   bottom: 0;
 }
+.container{
+  margin: 0 35px 0 35px;
+  padding: 25px 0 25px 0;
+}
+.submit-button{
+  padding: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  background-color: #00dabc;
+  border-radius: 5px;
+  border: 0;
+  margin: 10px 0 10px 0;
+  float: right;
+}
