@@ -55,3 +55,14 @@ footer{
   margin: 10px 0 10px 0;
   float: right;
 }
+.add-button{
+  font-family: roboto;
+  padding: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  background-color: #00dabc;
+  border-radius: 5px;
+  border: 0;
+  margin: 10px 0 10px 0;
+}

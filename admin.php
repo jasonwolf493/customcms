@@ -130,10 +130,30 @@ if ($loggedin!="true" || empty($loggedin)){
       $conn->close();
 
       echo"
-        <form method='POST' action='/admin.php'>
-          <textarea name='post-content' id='content-editor' class='content-editor'>";
+      <input class='add-button' type='submit' value='Create New Page'>";
+
+//update function
+          if(isset($_GET['update'])){
+            echo "<br>Page updated.";
+            $servername = "localhost";
+            $username = "admin";
+            $password = "password";
+            $dbname = "pages";
 
 
+            //use the localurl to search the DB for the content for this specific URL
+            // Create connection
+            $conn = new mysqli($servername, $username, $password, $dbname);
+            // Check connection
+            if ($conn->connect_error) {
+              die("Connection failed: " . $conn->connect_error);
+            }
+            $pageID = $_GET['update'];
+            $postContent = $_GET['post-content'];
+            $sql = "UPDATE `page` SET `content` = '$postContent' WHERE `id` = $pageID";
+            $result = $conn->query($sql);
+            $conn->close();
+          }
 
 
           if(isset($_GET['editID'])){
@@ -141,6 +161,8 @@ if ($loggedin!="true" || empty($loggedin)){
             $username = "admin";
             $password = "password";
             $dbname = "pages";
+            echo "        <form method='GET' action='/admin.php'>
+                      <textarea name='post-content' id='content-editor' class='content-editor'>";
 
             //use the localurl to search the DB for the content for this specific URL
             // Create connection
@@ -150,7 +172,7 @@ if ($loggedin!="true" || empty($loggedin)){
               die("Connection failed: " . $conn->connect_error);
             }
             $pageID = $_GET['editID'];
-            $sql = "SELECT * FROM `page` WHERE `id` = $pageID ";
+            $sql = "SELECT * FROM `page` WHERE `id` = $pageID";
             $result = $conn->query($sql);
 
             if ($result->num_rows > 0) {
@@ -159,6 +181,20 @@ if ($loggedin!="true" || empty($loggedin)){
               while($row = $result->fetch_assoc()) {
 
                 echo $row['content'];
+                echo "
+                </textarea>
+                <button class='submit-button' name='update' type='submit' value='$pageID'>Submit</button>
+              </form>
+              <script>
+                  tinymce.init({
+                    selector: 'textarea',
+                    plugins: 'autolink lists media table',
+                    toolbar: 'a11ycheck addcomment showcomments casechange checklist code formatpainter pageembed permanentpen table',
+                    toolbar_mode: 'floating',
+                    tinycomments_mode: 'embedded',
+                    tinycomments_author: 'Author name'
+                  });
+              </script>";
 
                 if ($i == $result->num_rows) {
                   echo "</ul>";
@@ -186,19 +222,6 @@ if ($loggedin!="true" || empty($loggedin)){
 
 
           echo "
-          </textarea>
-          <input class='submit-button' type='submit' value='Submit'>
-        </form>
-        <script>
-            tinymce.init({
-              selector: 'textarea',
-              plugins: 'autolink lists media table',
-              toolbar: 'a11ycheck addcomment showcomments casechange checklist code formatpainter pageembed permanentpen table',
-              toolbar_mode: 'floating',
-              tinycomments_mode: 'embedded',
-              tinycomments_author: 'Author name'
-            });
-        </script>
       </div>
     </body>
   </html>";
