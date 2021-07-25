@@ -30,6 +30,7 @@
 .translucent-form-overlay input::placeholder {
   color: #8a8a8a;
 }
+
 html{
   overflow: scroll;
   height: 100%;
@@ -43,8 +44,15 @@ footer{
   margin: 0 35px 0 35px;
   padding: 25px 0 25px 0;
 }
+input[type=checkbox]{
+  top: 3px;
+  position: relative;
+}
+label{
+  padding-right:5px;
+  display: inline-block;
+}
 .submit-button{
-  font-family: roboto;
   padding: 10px;
   font-weight: bold;
   text-transform: uppercase;
@@ -56,7 +64,7 @@ footer{
   float: right;
 }
 .add-button{
-  font-family: roboto;
+  cursor: pointer;
   padding: 10px;
   font-weight: bold;
   text-transform: uppercase;

@@ -93,11 +93,13 @@ if ($loggedin!="true" || empty($loggedin)){
   <!DOCTYPE html>
   <html>
     <head>
-      <script src='https://cdn.tiny.cloud/1/qiicceiwhvlqpefwujfkncty6igkuiqkmajsrli3raisjf3q/tinymce/5/tinymce.min.js' referrerpolicy='origin'></script>
-    </head>
-    <body>
-      <div class='container'>";
 
+    </head>
+
+      <div class='container'>";
+      if (isset($_GET['updateComplete'])) {
+        echo "Update Complete.";
+      }
       $servername = "localhost";
       $username = "admin";
       $password = "password";
@@ -130,7 +132,40 @@ if ($loggedin!="true" || empty($loggedin)){
       $conn->close();
 
       echo"
-      <input class='add-button' type='submit' value='Create New Page'>";
+      <button class='add-button' name='create-new-page' type='submit' value='Create New Page' onclick='window.location.href=\"?newpage=1\";'>Create New Page</button>";
+
+      //if newpage isset insert new page into db
+      // INSERT INTO `page`(`content`, `href`, `template`, `pagename`, `title`) VALUES ('New Page','New Page','test_template.php','New Page','New Page')
+      if(isset($_GET['newpage'])){
+        echo "<br>Page Added.";
+        $servername = "localhost";
+        $username = "admin";
+        $password = "password";
+        $dbname = "pages";
+
+
+        //use the localurl to search the DB for the content for this specific URL
+        // Create connection
+        $conn = new mysqli($servername, $username, $password, $dbname);
+        // Check connection
+        if ($conn->connect_error) {
+          die("Connection failed: " . $conn->connect_error);
+        }
+        $sql = "INSERT INTO `page`(`content`, `href`, `template`, `pagename`, `title`, `onNav`) VALUES ('New Page','New Page','template_test.php','New Page','New Page','0')";
+        $result = $conn->query($sql);
+        $conn->close();
+      }
+
+
+
+
+
+
+
+
+
+
+
 
 //update function
           if(isset($_GET['update'])){
@@ -149,11 +184,114 @@ if ($loggedin!="true" || empty($loggedin)){
               die("Connection failed: " . $conn->connect_error);
             }
             $pageID = $_GET['update'];
-            $postContent = $_GET['post-content'];
+            $postContent = $_GET['editordata'];
             $sql = "UPDATE `page` SET `content` = '$postContent' WHERE `id` = $pageID";
             $result = $conn->query($sql);
             $conn->close();
           }
+
+
+          if(isset($_GET['title'])){
+            echo "<br>Page updated.";
+            $servername = "localhost";
+            $username = "admin";
+            $password = "password";
+            $dbname = "pages";
+
+
+            //use the localurl to search the DB for the content for this specific URL
+            // Create connection
+            $conn = new mysqli($servername, $username, $password, $dbname);
+            // Check connection
+            if ($conn->connect_error) {
+              die("Connection failed: " . $conn->connect_error);
+            }
+            $title = $_GET['title'];
+            $postContent = $_GET['editordata'];
+            $sql = "UPDATE `page` SET `title` = '$title' WHERE `id` = $pageID";
+            $result = $conn->query($sql);
+            $conn->close();
+          }
+
+
+
+
+
+
+
+
+
+          if(isset($_GET['update'])){
+            echo "<br>Page updated.";
+            $servername = "localhost";
+            $username = "admin";
+            $password = "password";
+            $dbname = "pages";
+
+
+            //use the localurl to search the DB for the content for this specific URL
+            // Create connection
+            $conn = new mysqli($servername, $username, $password, $dbname);
+            // Check connection
+            if ($conn->connect_error) {
+              die("Connection failed: " . $conn->connect_error);
+            }
+
+            $pagename = $_GET['pagename'];
+            $postContent = $_GET['editordata'];
+            $sql = "UPDATE `page` SET `pagename` = '$pagename' WHERE `id` = $pageID";
+            $result = $conn->query($sql);
+            $conn->close();
+
+            if(isset($_GET['onNav'])){
+              echo "<br>Page updated.";
+              $servername = "localhost";
+              $username = "admin";
+              $password = "password";
+              $dbname = "pages";
+
+
+              //use the localurl to search the DB for the content for this specific URL
+              // Create connection
+              $conn = new mysqli($servername, $username, $password, $dbname);
+              // Check connection
+              if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+              }
+              $onNav = $_GET['onNav'];
+              $postContent = $_GET['editordata'];
+              $sql = "UPDATE `page` SET `onNav` = '$onNav' WHERE `id` = $pageID";
+              $result = $conn->query($sql);
+              $conn->close();
+            }else{
+              $servername = "localhost";
+              $username = "admin";
+              $password = "password";
+              $dbname = "pages";
+
+
+              //use the localurl to search the DB for the content for this specific URL
+              // Create connection
+              $conn = new mysqli($servername, $username, $password, $dbname);
+              // Check connection
+              if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+              }
+              $postContent = $_GET['editordata'];
+              $sql = "UPDATE `page` SET `onNav` = '0' WHERE `id` = $pageID";
+              $result = $conn->query($sql);
+              $conn->close();
+            }
+
+
+
+          }
+
+
+
+
+
+
 
 
           if(isset($_GET['editID'])){
@@ -161,8 +299,11 @@ if ($loggedin!="true" || empty($loggedin)){
             $username = "admin";
             $password = "password";
             $dbname = "pages";
-            echo "        <form method='GET' action='/admin.php'>
-                      <textarea name='post-content' id='content-editor' class='content-editor'>";
+
+
+
+                   //<form method='GET' action='/admin.php'>
+                    //  <textarea name='post-content' id='content-editor' class='content-editor'>
 
             //use the localurl to search the DB for the content for this specific URL
             // Create connection
@@ -179,22 +320,41 @@ if ($loggedin!="true" || empty($loggedin)){
 
               // output data of each row
               while($row = $result->fetch_assoc()) {
+                //pagename ---- title
+                $onNav = $row['onNav'];
+                $pagename = $row['pagename'];
+                $title = $row['title'];
+                echo "
 
+
+                <form method='GET' action='/admin.php'>
+                <label>On navigation:</label><input name='onNav' type='checkbox' value='1'";
+                 if ($onNav == 1) {
+                   echo "checked";
+                }
+                echo "></br>
+                <input name='title' placeholder='Title' type='text' value='$title'>
+                <input name='pagename' placeholder='Heading' type='text' value='$pagename'>
+                  <textarea id='summernote' name='editordata'>";
                 echo $row['content'];
                 echo "
+
+
+
                 </textarea>
                 <button class='submit-button' name='update' type='submit' value='$pageID'>Submit</button>
               </form>
               <script>
-                  tinymce.init({
-                    selector: 'textarea',
-                    plugins: 'autolink lists media table',
-                    toolbar: 'a11ycheck addcomment showcomments casechange checklist code formatpainter pageembed permanentpen table',
-                    toolbar_mode: 'floating',
-                    tinycomments_mode: 'embedded',
-                    tinycomments_author: 'Author name'
+                $(document).ready(function() {
+                  $('#summernote').summernote({
+                    height: 300,
+                    minHeight: 350,
+                    maxHeight: null,
+                    focus: true
                   });
-              </script>";
+                });
+              </script>
+              ";
 
                 if ($i == $result->num_rows) {
                   echo "</ul>";

@@ -26,12 +26,22 @@ $result = $conn->query($sql);
 if ($result->num_rows > 0) {
   // output data of each row
   while($row = $result->fetch_assoc()) {
-    echo "$row[content]";
+    $title = $row['title'];
+    $pagename = $row['pagename'];
+    $content = $row['content'];
+    echo "
+      <div>
+        <h1>$pagename</h1>
+      </div>
+      <div class=content>
+        $content
+      </div>";
     if ($row == $result->num_rows) {
       echo "$row == $result->num_rows";
     }
   }
 } else {
+  //header('Location: /404.php?updateComplete');
   echo "<h1>404</h1><br><h2>Page not found.</h2>";
 }
 
